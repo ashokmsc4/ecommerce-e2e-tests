@@ -63,6 +63,8 @@ both into `tasawoq-results.zip`. Nothing is filled in on checkout, login or regi
 ```bash
 npm test                    # all browsers
 npm run test:chromium       # desktop Chrome only
+npm run test:headed -- --project=chromium   # watch Chrome run the tests
+npx playwright test --ui    # step-by-step view with a live browser
 npm run test:mobile         # Pixel 7 emulation
 npm run test:smoke          # @smoke subset
 npx playwright test tests/cart.spec.ts --headed
