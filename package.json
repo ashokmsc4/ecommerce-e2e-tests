@@ -11,7 +11,9 @@
     "test:mobile": "playwright test --project=mobile-chrome",
     "report": "playwright show-report",
     "typecheck": "tsc --noEmit",
-    "codegen": "playwright codegen"
+    "codegen": "playwright codegen",
+    "capture": "node scripts/capture-site.mjs",
+    "share": "bash scripts/share-results.sh"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",

@@ -45,6 +45,19 @@ cp .env.example .env   # then fill in values
 | `PRODUCT_PATH` | Optional fixed PDP path (e.g. `/some-product.html`) instead of discovering via search |
 | `ALLOW_REGISTRATION` | `false` to skip account-creation tests |
 
+## Sharing a run for selector tuning
+
+If the UAT is only reachable from your network, run this from a machine that can open it:
+
+```bash
+npm ci && npx playwright install chromium
+npm run share
+```
+
+It captures HTML, accessibility trees and screenshots of the key pages into `site-snapshot/`
+(`scripts/capture-site.mjs`, read-only apart from one add-to-cart), runs the Chromium suite, and zips
+both into `tasawoq-results.zip`. Nothing is filled in on checkout, login or registration during capture.
+
 ## Running
 
 ```bash
