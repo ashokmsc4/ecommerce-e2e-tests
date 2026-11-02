@@ -1,0 +1,12 @@
+node_modules/
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+.auth/
+.env
+*.log
+site-snapshot/
+tasawoq-results.zip
+capture.log
+test-run.log
