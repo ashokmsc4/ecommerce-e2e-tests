@@ -28,7 +28,7 @@ export class ListingPage extends BasePage {
     this.filters = page.locator('#layered-filter-block, .block.filter, .filters, .facets, aside [class*="filter"]').first();
     this.emptyState = page
       .locator('.message.notice, .search.results .message, .no-results, .empty')
-      .or(page.getByText(/no results|returned no results|no products|couldn.t find|لا توجد نتائج|لم يتم العثور/i))
+      .or(page.getByText(/no results|returned no results|no products|couldn.t find|did not match|0 items?\b|لا توجد نتائج|لم يتم العثور/i))
       .first();
     this.pagerNext = page.locator('.pages .action.next, a.next, [rel="next"]').first();
     this.breadcrumbs = page.locator('.breadcrumbs, nav[aria-label*="breadcrumb" i]').first();

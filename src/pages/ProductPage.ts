@@ -35,7 +35,8 @@ export class ProductPage extends BasePage {
     this.stockStatus = page.locator('.stock, .product-info-stock-sku .stock, [itemprop="availability"]').first();
     this.description = page.locator('#description, .product.attribute.description, .product__description, #tab-description').first();
     this.swatchOptions = page.locator('.swatch-attribute');
-    this.selectOptions = page.locator('.product-options-wrapper select, form[action*="cart"] select, variant-selects select');
+    // Tasawoq: required custom option (e.g. "Extended Warranty") is a select named options[<id>] inside #product_addtocart_form.
+    this.selectOptions = page.locator('.product-options-wrapper select, #product_addtocart_form select, select[name^="options["], form[action*="cart"] select, variant-selects select');
     this.addedConfirmation = page
       .locator('.message-success, .minicart-wrapper.active, .block-minicart:visible, .cart-notification:visible, [role="alert"]')
       .or(page.getByText(/you added .* to your (shopping )?cart|added to (cart|bag)|تمت الإضافة|تم إضافة/i))

@@ -23,7 +23,8 @@ export class AccountPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    const loginForm = page.locator('form#login-form, form.form-login, form.woocommerce-form-login, form[action*="login"]').first();
+    // Tasawoq: #login-form posts to /customer/account/loginPost/.
+    const loginForm = page.locator('form#login-form, form[action*="loginPost"], form.form-login').first();
     this.loginEmail = loginForm.locator('input[type="email"], input[name="login[username]"], input[name="username"], input[name="email"]').first();
     this.loginPassword = loginForm.locator('input[type="password"]').first();
     this.loginButton = loginForm
@@ -38,7 +39,8 @@ export class AccountPage extends BasePage {
       .or(page.getByRole('link', { name: /create (an )?account|register|إنشاء حساب|تسجيل/i }))
       .first();
 
-    const regForm = page.locator('form#form-validate, form.form-create-account, form.woocommerce-form-register, form[action*="create"], form[action*="register"]').first();
+    // Tasawoq: the create-account form posts to /customer/account/createpost/ (id form-validate is shared with other forms).
+    const regForm = page.locator('form[action*="customer/account/createpost"], form.form-create-account').first();
     this.regFirstName = regForm.locator('input[name="firstname"], input[name="first_name"], input[name="customer[first_name]"]').first();
     this.regLastName = regForm.locator('input[name="lastname"], input[name="last_name"], input[name="customer[last_name]"]').first();
     this.regEmail = regForm.locator('input[name="email"], input[type="email"]').first();

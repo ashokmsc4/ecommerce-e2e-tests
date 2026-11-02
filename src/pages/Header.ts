@@ -46,7 +46,7 @@ export class Header {
       .or(page.getByRole('button', { name: /^(english|en|العربية|عربي|ar)$/i }))
       .filter({ visible: true })
       .first();
-    this.mainNav = page.locator('nav.navigation, .nav-sections nav, nav[role="navigation"], header nav, .main-menu').first();
+    this.mainNav = page.locator('nav.navigation, .nav-sections nav, nav[role="navigation"], header nav, .main-menu').filter({ visible: true }).first();
     this.mobileMenuToggle = page.locator('.nav-toggle, [data-action="toggle-nav"], button[aria-label*="menu" i]').first();
   }
 
