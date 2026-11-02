@@ -20,13 +20,16 @@ export class ProductPage extends BasePage {
       .locator('.product-info-main .price, .product-info-price .price, [itemprop="price"], .product__price, .summary .price, [data-price-type="finalPrice"]')
       .first();
     this.mainImage = page
-      .locator('.fotorama__stage img, .gallery-placeholder img, .product-media img, .product__media img, .woocommerce-product-gallery img, main img')
+      .locator('.product.media img, .fotorama__stage img, .gallery-placeholder img, .product-media img, .product__media img, .woocommerce-product-gallery img')
+      .filter({ visible: true })
       .first();
     this.qtyInput = page.locator('input#qty, input[name="qty"], input[name="quantity"]').first();
+    // Tasawoq (Magento 2): the PDP button is #product-addtocart-button, labelled "add to bag".
+    // Product carousels further down use "Add to Cart" (button.add2cartfinal), so match the PDP id first.
     this.addToCartButton = page
-      .locator('#product-addtocart-button, button.tocart, button[name="add"], button.single_add_to_cart_button')
+      .locator('#product-addtocart-button')
+      .or(page.locator('.product-info-main button.tocart'))
       .or(page.getByRole('button', { name: /add to (cart|bag|basket)|أضف إلى السلة|اضف الى السلة|إضافة إلى السلة/i }))
-      // Tasawoq: product carousels below the PDP also have "Add to Cart" (button.add2cartfinal), often off-screen.
       .filter({ visible: true })
       .first();
     this.stockStatus = page.locator('.stock, .product-info-stock-sku .stock, [itemprop="availability"]').first();

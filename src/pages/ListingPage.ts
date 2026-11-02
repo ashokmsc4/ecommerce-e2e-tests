@@ -19,7 +19,7 @@ export class ListingPage extends BasePage {
     this.title = page.locator('h1, .page-title').first();
     this.productItems = page.locator(
       'ol.products li.product-item, .products-grid .product-item, .product-grid-item, .product-card, li.product, [data-product-id]',
-    );
+    ).filter({ visible: true });
     this.productNameLinks = page.locator(
       'a.product-item-link, .product-item-name a, .product-card__title a, .woocommerce-loop-product__link, .product-item-info a[href]:not([href*="wishlist"]):not([href*="compare"])',
     );

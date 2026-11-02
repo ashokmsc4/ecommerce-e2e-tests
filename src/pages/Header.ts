@@ -17,6 +17,7 @@ export class Header {
     this.logo = page
       .locator('a.logo, .logo a, header a[href="/"], header a[aria-label*="home" i]')
       .or(page.getByRole('link', { name: /home|logo|tasawoq|تسوق/i }))
+      .filter({ visible: true })
       .first();
     this.searchInput = page
       .locator('#search_mini_form input#search')

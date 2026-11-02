@@ -14,7 +14,7 @@ export class HomePage extends BasePage {
       .first();
     this.productLinks = page.locator(
       '.product-item a.product-item-link, .product-item-info a[href], .product-card a[href], a.product-item-photo, [data-product-id] a[href]',
-    );
+    ).filter({ visible: true });
     this.footer = page.locator('footer, .page-footer, [role="contentinfo"]').first();
     this.newsletterInput = page.locator('#newsletter, input[name="email"][id*="newsletter"], footer input[type="email"]').first();
   }
