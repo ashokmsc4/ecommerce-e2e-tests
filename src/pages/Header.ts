@@ -19,7 +19,8 @@ export class Header {
       .or(page.getByRole('link', { name: /home|logo|tasawoq|تسوق/i }))
       .first();
     this.searchInput = page
-      .getByRole('searchbox')
+      .locator('#search_mini_form input#search')
+      .or(page.getByRole('searchbox'))
       .or(page.getByRole('combobox', { name: /search|بحث/i }))
       .or(page.locator('input#search, input[name="q"], input[type="search"], input[placeholder*="search" i], input[placeholder*="بحث"]'))
       .first();
@@ -31,14 +32,18 @@ export class Header {
       .or(page.getByRole('link', { name: /cart|bag|basket|السلة|عربة/i }))
       .first();
     this.cartCount = page.locator('.counter-number, .cart-count, .minicart-qty, [data-cart-count]').first();
+    // Tasawoq: visible "Hello, Sign in / Account" link (a.tac); the top-links copy is hidden.
     this.accountLink = page
-      .locator('a[href*="/customer/account"], a[href*="/account"], .authorization-link a')
+      .locator('.accounts a.tac, a[href*="/customer/account"]:visible, .authorization-link a:visible')
       .or(page.getByRole('link', { name: /sign in|log ?in|my account|account|تسجيل الدخول|حسابي/i }))
+      .filter({ visible: true })
       .first();
+    // Tasawoq shows a plain "العربية" link to /ar/ above the header; the Magento dropdown is hidden.
     this.languageSwitcher = page
-      .locator('.switcher-language, #switcher-language, .language-switcher, [data-ui-id*="language"], a[hreflang], a[href*="___store"]')
-      .or(page.getByRole('link', { name: /^(english|en|العربية|عربي|ar)$/i }))
+      .getByRole('link', { name: /^(العربية|english)$/i })
+      .or(page.locator('.switcher-language, #switcher-language, .language-switcher, [data-ui-id*="language"], a[hreflang], a[href*="___store"]'))
       .or(page.getByRole('button', { name: /^(english|en|العربية|عربي|ar)$/i }))
+      .filter({ visible: true })
       .first();
     this.mainNav = page.locator('nav.navigation, .nav-sections nav, nav[role="navigation"], header nav, .main-menu').first();
     this.mobileMenuToggle = page.locator('.nav-toggle, [data-action="toggle-nav"], button[aria-label*="menu" i]').first();

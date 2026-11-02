@@ -17,13 +17,13 @@ export const guestShipping = () => {
   return {
     ...c,
     street: '123 Test Street',
-    city: 'Riyadh',
+    city: 'Kuwait City',
     postcode: '12345',
-    country: 'Saudi Arabia',
+    country: 'Kuwait',
   };
 };
 
-/** Parse a price string like "SAR 1,234.50", "١٬٢٣٤٫٥٠ ر.س" or "1.234,50 €" into a number. */
+/** Parse a price string like "KD 1,234.500", "١٬٢٣٤٫٥٠ ر.س" or "1.234,50 €" into a number. */
 export const parsePrice = (raw: string): number => {
   const western = raw.replace(/[٠-٩]/g, (d) => String('٠١٢٣٤٥٦٧٨٩'.indexOf(d))).replace(/[٬]/g, ',').replace(/[٫]/g, '.');
   const cleaned = western.replace(/[^\d.,]/g, '');

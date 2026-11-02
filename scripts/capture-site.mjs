@@ -55,6 +55,7 @@ async function capture(name, url, { fullPage = true } = {}) {
       entry.status = res?.status();
     }
     await page.waitForLoadState('networkidle', { timeout: 15_000 }).catch(() => undefined);
+    if (name === 'checkout') await page.waitForTimeout(8_000); // knockout renders the shipping form late
     entry.url = page.url();
     entry.title = await page.title();
     entry.lang = await page.locator('html').getAttribute('lang');
@@ -87,8 +88,8 @@ async function capture(name, url, { fullPage = true } = {}) {
       })),
     );
   } catch (e) {
-    entry.error = String(e);
-    summary.errors.push(`${name}: ${e}`);
+    entry.error = String(e).split('\n')[0];
+    summary.errors.push(`${name}: ${entry.error}`);
   }
   summary.pages.push(entry);
   console.log(`${name.padEnd(16)} ${entry.status ?? ''} ${entry.url ?? entry.error}`);
@@ -144,7 +145,7 @@ if (!productUrl) {
   for (const src of [search, summary.pages.find((p) => p.name === 'category')].filter(Boolean)) {
     await page.goto(src.url, { waitUntil: 'domcontentloaded' }).catch(() => undefined);
     productUrl = await page
-      .locator('.product-item a[href], a.product-item-link, [class*="product"] a[href]:has(img), [class*="Product"] a[href]:has(img)')
+      .locator('main a.product-item-link[href], main .product-item-info a.product-item-photo[href]')
       .first()
       .getAttribute('href', { timeout: 5_000 })
       .catch(() => undefined);
@@ -155,11 +156,13 @@ if (productUrl) {
   await capture('product', new URL(productUrl, baseUrl).href);
   // Try one add-to-cart so we can see the mini-cart and a non-empty cart.
   const add = page
-    .getByRole('button', { name: /add to (cart|bag|basket)|أضف|إضافة/i })
-    .or(page.locator('#product-addtocart-button, button[type="submit"].tocart, [class*="add-to-cart" i] button, button[class*="add-to-cart" i]'))
+    .locator('#product-addtocart-button, .product-info-main button.tocart, .product-info-main button.add2cartfinal')
+    .or(page.getByRole('button', { name: /add to (cart|bag|basket)|أضف|إضافة/i }))
+    .filter({ visible: true })
     .first();
   if (await add.isVisible().catch(() => false)) {
-    await add.click().catch((e) => summary.errors.push(`add-to-cart: ${e}`));
+    summary.addToCartButton = await add.evaluate((b) => b.outerHTML.slice(0, 400)).catch(() => undefined);
+    await add.click({ timeout: 10_000 }).catch((e) => summary.errors.push(`add-to-cart: ${String(e).split('\n')[0]}`));
     await page.waitForTimeout(4_000);
     await capture('after-add-to-cart', null, { fullPage: false });
   } else {
@@ -172,7 +175,7 @@ if (productUrl) {
 // 6. Cart, checkout (view only), account pages
 for (const [name, paths] of [
   ['cart', ['/checkout/cart/', '/cart']],
-  ['checkout', ['/checkout/', '/checkout']],
+  ['checkout', ['/checkout/']],
   ['login', ['/customer/account/login/', '/account/login', '/login']],
   ['register', ['/customer/account/create/', '/account/register', '/register']],
   ['forgot-password', ['/customer/account/forgotpassword/', '/account/forgot-password', '/forgot-password']],

@@ -26,6 +26,8 @@ export class ProductPage extends BasePage {
     this.addToCartButton = page
       .locator('#product-addtocart-button, button.tocart, button[name="add"], button.single_add_to_cart_button')
       .or(page.getByRole('button', { name: /add to (cart|bag|basket)|أضف إلى السلة|اضف الى السلة|إضافة إلى السلة/i }))
+      // Tasawoq: product carousels below the PDP also have "Add to Cart" (button.add2cartfinal), often off-screen.
+      .filter({ visible: true })
       .first();
     this.stockStatus = page.locator('.stock, .product-info-stock-sku .stock, [itemprop="availability"]').first();
     this.description = page.locator('#description, .product.attribute.description, .product__description, #tab-description').first();

@@ -14,7 +14,7 @@ export const env = {
     email: str('TEST_USER_EMAIL'),
     password: str('TEST_USER_PASSWORD'),
   },
-  searchTerm: str('SEARCH_TERM', 'shirt'),
+  searchTerm: str('SEARCH_TERM', 'shampoo'),
   searchTermNoResults: str('SEARCH_TERM_NO_RESULTS', 'zzqxnotaproduct123'),
   productPath: str('PRODUCT_PATH'),
   allowRegistration: str('ALLOW_REGISTRATION', 'true').toLowerCase() !== 'false',
