@@ -6,7 +6,9 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 1,
-  workers: process.env.CI ? 2 : undefined,
+  // The UAT is slow to tear down under heavy parallel load (31 teardown timeouts in run 7),
+  // so default to 2 workers locally too. Override with PW_WORKERS=1 for the most stable run.
+  workers: Number(process.env.PW_WORKERS) || 2,
   timeout: 60_000,
   expect: { timeout: 10_000 },
   reporter: [
