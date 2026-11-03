@@ -38,7 +38,8 @@ export class ProductPage extends BasePage {
     // Tasawoq: required custom option (e.g. "Extended Warranty") is a select named options[<id>] inside #product_addtocart_form.
     this.selectOptions = page.locator('.product-options-wrapper select, #product_addtocart_form select, select[name^="options["], form[action*="cart"] select, variant-selects select');
     this.addedConfirmation = page
-      .locator('.message-success, .minicart-wrapper.active, .block-minicart:visible, .cart-notification:visible, [role="alert"]')
+      // Tasawoq's header cart counter loses its "empty" class once an item is added.
+      .locator('.minicart-wrapper .counter.qty:not(.empty), .message-success, .minicart-wrapper.active, .block-minicart:visible, .cart-notification:visible, [role="alert"]')
       .or(page.getByText(/you added .* to your (shopping )?cart|added to (cart|bag)|تمت الإضافة|تم إضافة/i))
       .first();
   }
