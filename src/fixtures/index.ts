@@ -49,20 +49,17 @@ export const test = base.extend<Pages>({
         await home.header.search(env.searchTerm);
         await listing.waitForReady();
         await listing.expectHasProducts();
-        // Search hits include out-of-stock items, whose add-to-bag stays disabled, so
-        // open results in turn and keep the first one that can be added to the bag.
-        const results = listing.productNameLinks;
-        const count = Math.min(await results.count(), 8);
-        for (let i = 0; i < count; i++) {
-          if (i > 0) {
-            await page.goBack();
-            await listing.waitForReady();
-          }
-          await results.nth(i).click();
-          await listing.waitForReady();
+        // Search hits include out-of-stock items, whose add-to-bag stays disabled. Visit the
+        // first few result URLs directly and keep the first one that can be added to the bag.
+        const hrefs = await listing.productNameLinks.evaluateAll((as) =>
+          [...new Set((as as HTMLAnchorElement[]).map((a) => a.href))].slice(0, 6),
+        );
+        for (const [i, href] of hrefs.entries()) {
+          await page.goto(href, { waitUntil: 'domcontentloaded' });
+          await product.waitForReady();
           await expect(product.name).toBeVisible();
           await product.selectRequiredOptions();
-          if (await product.addToCartButton.isEnabled().catch(() => false)) break;
+          if ((await product.addToCartButton.isEnabled().catch(() => false)) || i === hrefs.length - 1) break;
         }
       }
       await expect(product.name).toBeVisible();
