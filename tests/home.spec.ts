@@ -18,7 +18,7 @@ test.describe('Home page @smoke', () => {
   });
 
   test('shows merchandised content and a footer', async ({ home }) => {
-    await expect(home.heroBanner.or(home.productLinks.first())).toBeVisible();
+    await expect(home.heroBanner.or(home.productLinks.first()).first()).toBeVisible();
     await home.footer.scrollIntoViewIfNeeded();
     await expect(home.footer).toBeVisible();
   });

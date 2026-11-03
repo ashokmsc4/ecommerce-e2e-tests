@@ -17,7 +17,7 @@ test.describe('Navigation and categories', () => {
     await listing.waitForReady();
     await listing.expectNoServerError();
     await expect(listing.title).toBeVisible();
-    await expect(listing.productItems.first().or(listing.page.locator('.category-view, .subcategories, .category-cms'))).toBeVisible();
+    await expect(listing.productItems.first().or(listing.page.locator('.category-view, .subcategories, .category-cms')).first()).toBeVisible();
     expect(page.url()).not.toBe(home.page.url().replace(/\/$/, '') + '/');
   });
 
