@@ -40,7 +40,7 @@ export const test = base.extend<Pages>({
   cart: async ({ page }, use) => use(new CartPage(page)),
   checkout: async ({ page }, use) => use(new CheckoutPage(page)),
   account: async ({ page }, use) => use(new AccountPage(page)),
-  openAnyProduct: async ({ home, listing, product }, use) => {
+  openAnyProduct: async ({ home, listing, product, page }, use) => {
     await use(async () => {
       if (env.productPath) {
         await product.goto(env.productPath);
@@ -49,7 +49,21 @@ export const test = base.extend<Pages>({
         await home.header.search(env.searchTerm);
         await listing.waitForReady();
         await listing.expectHasProducts();
-        await listing.openFirstProduct();
+        // Search hits include out-of-stock items, whose add-to-bag stays disabled, so
+        // open results in turn and keep the first one that can be added to the bag.
+        const results = listing.productNameLinks;
+        const count = Math.min(await results.count(), 8);
+        for (let i = 0; i < count; i++) {
+          if (i > 0) {
+            await page.goBack();
+            await listing.waitForReady();
+          }
+          await results.nth(i).click();
+          await listing.waitForReady();
+          await expect(product.name).toBeVisible();
+          await product.selectRequiredOptions();
+          if (await product.addToCartButton.isEnabled().catch(() => false)) break;
+        }
       }
       await expect(product.name).toBeVisible();
     });
