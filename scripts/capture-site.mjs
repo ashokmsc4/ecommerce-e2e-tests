@@ -14,7 +14,7 @@ import path from 'node:path';
 dotenv.config();
 
 const baseUrl = (process.env.BASE_URL || 'https://tasawoq.uat.aawweb.com').replace(/\/+$/, '');
-const searchTerm = process.env.SEARCH_TERM || 'shirt';
+const searchTerm = process.env.SEARCH_TERM || 'shampoo';
 const outDir = path.resolve('site-snapshot');
 const httpUser = process.env.HTTP_USERNAME;
 
@@ -162,6 +162,18 @@ if (productUrl) {
     .first();
   if (await add.isVisible().catch(() => false)) {
     summary.addToCartButton = await add.evaluate((b) => b.outerHTML.slice(0, 400)).catch(() => undefined);
+    // Record every product option control so a disabled add-to-bag can be traced to a missing choice.
+    summary.productOptions = await page.$$eval('select, input[type="radio"], input[type="checkbox"]', (els) =>
+      els
+        .filter((el) => el.closest('form, .product-info-main'))
+        .map((el) => ({
+          tag: el.tagName.toLowerCase(),
+          name: el.getAttribute('name'),
+          id: el.id,
+          required: el.hasAttribute('required') || el.classList.contains('required'),
+          options: el.tagName === 'SELECT' ? [...el.options].map((o) => `${o.value}|${o.text.trim()}|${o.disabled}`) : undefined,
+        })),
+    ).catch(() => undefined);
     await add.click({ timeout: 10_000 }).catch((e) => summary.errors.push(`add-to-cart: ${String(e).split('\n')[0]}`));
     await page.waitForTimeout(4_000);
     await capture('after-add-to-cart', null, { fullPage: false });
